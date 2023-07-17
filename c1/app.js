@@ -49,6 +49,7 @@ app.use(
       secret: process.env.JWT_SECRET,
     })
     .unless({
+      // osven ovie ruti
       path: ["/api/v1/signup", "/api/v1/login", "/movies"],
     })
 );
@@ -70,3 +71,11 @@ app.listen(process.env.PORT, (err) => {
   }
   console.log(`Service started successfully on port ${process.env.PORT}`);
 });
+
+//? DA SE KE KREIRA WEB SERVIS ILI REST API
+//? DA SE KREIRA OGLAS
+//? KAKO REKLAMA5
+//? I DA SE KREIRA AFTENTIKACIJA (korisnici - logirtanje)
+//? DA IMAME KOLEKCIJA SO AVTOMOBILI, VELOSIPEDI, NEDVIZNINI, TELEFONI
+//? SITE KORISNICI BEZ RAZLIKA NA LOGIRANJE DA IMMAT PRISTAP DO SITE KOLEKCII
+//? SAMO LOGIRANI KORISNI DA MOZE DA KREIRAAT BRISHAT I UPDEJTIRAAT DOKUMENTI VO KOLKECIITE

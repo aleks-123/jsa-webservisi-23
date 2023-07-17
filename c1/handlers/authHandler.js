@@ -16,27 +16,27 @@ exports.signup = async (req, res) => {
 
     // da generiraame token
     // kako prv parametar e payloadot, vtor parametar e tajnata recinica i kako tret rokot na istek
-    const token = jwt.sign(
-      { id: newUser._id, name: newUser.name },
-      process.env.JWT_SECRET,
-      {
-        expiresIn: process.env.JWT_EXPIRES,
-      }
-    );
+    // const token = jwt.sign(
+    //   { id: newUser._id, name: newUser.name },
+    //   process.env.JWT_SECRET,
+    //   {
+    //     expiresIn: process.env.JWT_EXPIRES,
+    //   }
+    // );
 
     // res.kkoies ima tri parametri prviot so kako se vika kukisot vtoriot vrednosta na kukisot i tretiot parametar dodatni opcii
-    res.cookie("jwt", token, {
-      expires: new Date(
-        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-      ),
-      secure: false,
-      httpOnly: true,
-    });
+    // res.cookie("jwt", token, {
+    //   expires: new Date(
+    //     Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+    //   ),
+    //   secure: false,
+    //   httpOnly: true,
+    // });
 
     // res.status ni vrakja token status i koirinkisot
     res.status(201).json({
       status: "success",
-      token,
+      // token,
       data: {
         user: newUser,
       },
@@ -49,6 +49,7 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+
     // 1. Proveruvame dali ima vneseno passvord i email
     if (!email || !password) {
       return res.status(400).send("Please provide email and password!");
@@ -63,11 +64,12 @@ exports.login = async (req, res) => {
 
     // 3. Sporeduvame pasvord
     const isPasswordValid = bcrypt.compareSync(password, user.password);
+
     if (!isPasswordValid) {
-      return res.status(400).send("Invalid email or password!");
+      return res.status(400).send("INVALIDDD PASSSWORRDDD!");
     }
 
-    // 4. Se generira i isprakja token
+    // 4. Se generira tokenot so sign metoda
     const token = jwt.sign(
       { id: user._id, name: user.name },
       process.env.JWT_SECRET,
