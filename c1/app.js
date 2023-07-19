@@ -26,9 +26,11 @@ const db = require("./pkg/db/index");
 // npm install express-jwt
 // so ovaj paket implementirame protekcija
 const jwt = require("express-jwt");
+const cookieParser = require("cookie-parser");
 
 const movies = require("./handlers/movies");
 const authHandler = require("./handlers/authHandler");
+const viewHandler = require("./handlers/viewHandler");
 
 //? inicijazilirame aplikacija
 const app = express();
@@ -37,9 +39,20 @@ const app = express();
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+//? ovaj paket se grizi za parsiranjeto na cookies
+app.use(cookieParser());
+// specificirame direktorija publik za da imame pristap za fajlovi od fronted
+// static metodot ni ovozmozuva da opsluzuvame staticni fajlovi
+app.use(express.static("public"));
 
 //? izvrsuvanje na init funkcijata so koja funkcija se konektirame so data baza
 db.init();
+
+// req.headers.authorization.split(" ")[1]; 5rasdgasdgasdgasdgasdgsgdasdg
+
+// req.cookies = {
+//   jwt: "5rasdgasdgasdgasdgasdgsgdasdg",
+// };
 
 // ovde koristime middelwarot sto ni ovozmuzva da gi protektirame rutite, kako prv parametar imame jwt.expressjwt , vnatre go stavame algoritmot za hashiranje i tajnaata poraka. i so pomosh na ovaj middelware gi protektirame site ruti osven onie ruti koi se vo unless metodata
 app.use(
@@ -47,10 +60,22 @@ app.use(
     .expressjwt({
       algorithms: ["HS256"],
       secret: process.env.JWT_SECRET,
+      getToken: (req) => {
+        if (
+          req.headers.authorization &&
+          req.headers.authorization.split(" ")[0] === "Bearer"
+        ) {
+          return req.headers.authorization.split(" ")[1];
+        }
+        if (req.cookies.jwt) {
+          return req.cookies.jwt;
+        }
+        return null; // vo slucaj ako nemame isprateno token
+      },
     })
     .unless({
       // osven ovie ruti
-      path: ["/api/v1/signup", "/api/v1/login", "/movies"],
+      path: ["/api/v1/signup", "/api/v1/login", "/login"],
     })
 );
 
@@ -63,6 +88,11 @@ app.post("/movies", movies.create);
 app.put("/movies/:id", movies.replace);
 app.patch("/movies/:id", movies.update);
 app.delete("/movies/:id", movies.delete);
+
+// view ruti
+app.get("/viewMovies", viewHandler.movieView);
+app.get("/login", viewHandler.getLoginForm);
+app.post("/createMovie", viewHandler.createMovie);
 
 //? slusame aplikacija
 app.listen(process.env.PORT, (err) => {
