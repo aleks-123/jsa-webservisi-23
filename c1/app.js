@@ -82,12 +82,15 @@ app.use(
 app.post("/api/v1/signup", authHandler.signup);
 app.post("/api/v1/login", authHandler.login);
 
-app.get("/movies", movies.getAll);
+app.get("/movies", authHandler.middelwareTest, movies.getAll);
 app.get("/movies/:id", movies.getOne);
 app.post("/movies", movies.create);
 app.put("/movies/:id", movies.replace);
 app.patch("/movies/:id", movies.update);
 app.delete("/movies/:id", movies.delete);
+
+app.get("/me", movies.getByUser);
+app.post("/createuser", movies.createByUser);
 
 // view ruti
 app.get("/viewMovies", viewHandler.movieView);
@@ -109,3 +112,8 @@ app.listen(process.env.PORT, (err) => {
 //? DA IMAME KOLEKCIJA SO AVTOMOBILI, VELOSIPEDI, NEDVIZNINI, TELEFONI
 //? SITE KORISNICI BEZ RAZLIKA NA LOGIRANJE DA IMMAT PRISTAP DO SITE KOLEKCII
 //? SAMO LOGIRANI KORISNI DA MOZE DA KREIRAAT BRISHAT I UPDEJTIRAAT DOKUMENTI VO KOLKECIITE
+
+//!
+//? ZA DOMASNA DA SE IMMPLEMENTIRA OGLASI, da moze sekoj korisnik da si kreira sopstveni oglasi
+//? isto taka sekoj korisnik da moze da gi vidi samo sopstvenite oglasi
+//? bonus: se sto imame uceno implementirajte

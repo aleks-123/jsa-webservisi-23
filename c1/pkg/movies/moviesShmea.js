@@ -7,23 +7,13 @@ const movieSchema = new mongoose.Schema({
   year: {
     type: Number,
   },
-  genre: {
-    type: String,
-  },
-  director: {
-    type: String,
-  },
-  realised: {
-    type: Date,
-  },
-  metascore: {
-    type: Number,
-  },
   imdbRating: {
     type: Number,
   },
-  plot: {
-    type: String,
+  // so ova se referencira za sto kje bide idito od koja kolekcija
+  author: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
   },
 });
 

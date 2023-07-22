@@ -3,7 +3,35 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <link rel="stylesheet" href="/css/global.css" />
+    <title>HBO</title>
   </head>
-  <body></body>
+  <body>
+    <h1><%= naslov %></h1>
+    <h2><%= kategorija %></h2>
+    <% if (movies.length === 0) { %>
+    <p>No movies found.</p>
+    <!--so forEach dinamicki kje go prikazime celiot movie array -->
+    <% } else {%> <% movies.forEach(movie =>{%>
+    <div class="film">
+      <h2 class="film-title"><%= movie.title %></h2>
+      <p><%= movie.year %></p>
+      <div class="film-rating">
+        <p>Rating: <%= movie.imdbRating %></p>
+      </div>
+    </div>
+    <%}); %> <% } %>
+
+    <form action="/createMovie" method="POST">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" />
+      <label for="year">Year:</label>
+      <input type="number" id="year" name="year" />
+      <label for="imdbRating">ImdbRating::</label>
+      <input type="number" id="imdbRating" name="imdbRating" />
+      <button class="film-button" type="submit" name="createMovie">
+        Vnesi nov film
+      </button>
+    </form>
+  </body>
 </html>

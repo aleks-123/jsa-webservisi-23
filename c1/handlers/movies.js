@@ -2,7 +2,10 @@ const Movie = require("../pkg/movies/moviesShmea");
 
 exports.getAll = async (req, res) => {
   try {
-    let movies = await Movie.find();
+    console.log(req.semos);
+
+    // so populate metodata namesto idinja gi popoulirame so nivnite vrednosti
+    let movies = await Movie.find().populate("author");
     res.status(200).json({
       status: "success",
       data: {
@@ -19,6 +22,7 @@ exports.getAll = async (req, res) => {
 
 exports.getOne = async (req, res) => {
   try {
+    console.log(req.semos);
     const movie = await Movie.findById(req.params.id);
     res.status(200).json({
       status: "success",
@@ -108,5 +112,35 @@ exports.delete = async (req, res) => {
     });
   } catch (err) {
     res.status(404).json({ status: "fail", message: err });
+  }
+};
+
+exports.createByUser = async (req, res, next) => {
+  try {
+    // const userId = req.auth.id;
+    //! poradi sto imame implementirano expressjwt toj kreira
+    //! objekt so koj imame pristap a go kreira so metoda jwt.decode
+    const moviePost = await Movie.create({
+      title: req.body.title,
+      year: req.body.year,
+      imdbRating: req.body.imdbRating,
+      author: req.auth.id,
+    });
+
+    res.status(201).json(moviePost);
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+exports.getByUser = async (req, res) => {
+  try {
+    const userId = req.auth.id;
+    //! vrshime query na avtorot od korisnikot sto e logiran
+    const mineMovies = await Movie.find({ author: userId });
+
+    res.status(201).json(mineMovies);
+  } catch (err) {
+    res.status(500).json({ error: err });
   }
 };

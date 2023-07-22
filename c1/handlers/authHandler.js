@@ -97,7 +97,56 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.protect = async (req, res) => {
+exports.protect = async (req, res, next) => {
   try {
-  } catch (err) {}
+    // 1) Go zemame tokenot i proveruvame dali e tamu
+    // console.log(req.headers);
+    let token;
+    if (req.headers.authorization) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+    // console.log(token);
+
+    if (!token) {
+      return res.status(500).send("You are not logged in! please log in");
+    }
+    // 2) Go verificirame tokenot
+    // promisot kje bide ili succes vrednost ili rejected kje ni frli error
+
+    //! prv nacin
+    // function verifyToken(token) {
+    //   return new Promise((resolve, reject) => {
+    //     jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+    //       if (err) {
+    //         reject(new Error("Token verification failed"));
+    //       } else {
+    //         resolve(decodedToken);
+    //       }
+    //     });
+    //   });
+    // }
+
+    // //!vtor nacin
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    // console.log(decoded);
+    // 3) Proveruvame korisnikot dali postoi
+    const userTrue = await User.findById(decoded.id);
+    if (!userTrue) {
+      return res.status(401).send("User doenst longer exist!");
+    }
+
+    // Davame dozvola za protektiranata ruta
+    req.auth = userTrue;
+
+    next();
+  } catch (err) {
+    return res.status(500).send("Internal server error");
+  }
+};
+
+exports.middelwareTest = (req, res, next) => {
+  console.log("This is middelawre");
+  req.semos = "WELCOME TO BACKEND";
+
+  next();
 };
