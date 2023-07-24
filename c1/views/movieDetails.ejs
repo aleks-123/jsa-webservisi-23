@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>Movie Details</h1>
+    <div>
+      <h2>Title: <%= movie.title%></h2>
+      <p>Year: <%= movie.year %></p>
+      <h2>IMBD Rating: <%= movie.imdbRating %></h2>
+    </div>
+    <hr />
+    <form action="/modifyMovie/<%= movie._id %>" method="POST">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" value="<%= movie.title %>" />
+      <label for="year">Year:</label>
+      <input type="number" id="year" name="year" value="<%= movie.year %>" />
+      <label for="imdbRating">ImdbRating::</label>
+      <input
+        type="number"
+        id="imdbRating"
+        name="imdbRating"
+        value="<%= movie.imdbRating %>"
+      />
+      <button class="film-button" type="submit" name="createMovie">
+        Azuriraj
+      </button>
+    </form>
+    <a href="/viewMovies">Go back</a>
+  </body>
+</html>

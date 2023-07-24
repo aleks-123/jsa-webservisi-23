@@ -8,17 +8,25 @@
   </head>
   <body>
     <h1><%= naslov %></h1>
+    <h4><%= status %></h4>
     <h2><%= kategorija %></h2>
+    <p><%= test.ime %></p>
     <% if (movies.length === 0) { %>
     <p>No movies found.</p>
     <!--so forEach dinamicki kje go prikazime celiot movie array -->
     <% } else {%> <% movies.forEach(movie =>{%>
     <div class="film">
-      <h2 class="film-title"><%= movie.title %></h2>
+      <a href="/viewMovies/<%=movie._id%>">
+        <h2 class="film-title"><%= movie.title %></h2></a
+      >
       <p><%= movie.year %></p>
       <div class="film-rating">
         <p>Rating: <%= movie.imdbRating %></p>
       </div>
+      <!-- <form action="/deleteMovie/<%= movie._id %>" method="POST">
+        <button type="submit" name="deleteMovie">Delete movie</button>
+      </form> -->
+      <a href="/deleteMovie/<%= movie._id %>">Delete movie</a>
     </div>
     <%}); %> <% } %>
 

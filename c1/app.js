@@ -96,7 +96,10 @@ app.post("/createuser", movies.createByUser);
 app.get("/viewMovies", viewHandler.movieView);
 app.get("/login", viewHandler.getLoginForm);
 app.post("/createMovie", viewHandler.createMovie);
-
+app.get("/deleteMovie/:id", viewHandler.deleteMovie);
+// app.post("/deleteMovie/:id", viewHandler.deleteMovie);
+app.get("/viewMovies/:id", viewHandler.viewMovieDetails);
+app.post("/modifyMovie/:id", viewHandler.modifyMovie);
 //? slusame aplikacija
 app.listen(process.env.PORT, (err) => {
   if (err) {
