@@ -15,6 +15,13 @@ const movieSchema = new mongoose.Schema({
     type: mongoose.Schema.ObjectId,
     ref: "User",
   },
+  slika: {
+    type: String,
+    default: "default.jpg",
+  },
+  sliki: {
+    type: [String],
+  },
 });
 
 const Movie = mongoose.model("Movie", movieSchema);

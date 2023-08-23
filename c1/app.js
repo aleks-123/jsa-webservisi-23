@@ -75,7 +75,13 @@ app.use(
     })
     .unless({
       // osven ovie ruti
-      path: ["/api/v1/signup", "/api/v1/login", "/login"],
+      path: [
+        "/api/v1/signup",
+        "/api/v1/login",
+        "/login",
+        "/movies",
+        "/movies/:id",
+      ],
     })
 );
 
@@ -86,7 +92,7 @@ app.get("/movies", authHandler.middelwareTest, movies.getAll);
 app.get("/movies/:id", movies.getOne);
 app.post("/movies", movies.create);
 app.put("/movies/:id", movies.replace);
-app.patch("/movies/:id", movies.update);
+app.patch("/movies/:id", movies.uploadFilmPhotos, movies.update);
 app.delete("/movies/:id", movies.delete);
 
 app.get("/me", movies.getByUser);

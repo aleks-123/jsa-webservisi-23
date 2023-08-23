@@ -7,6 +7,7 @@
     <title>HBO</title>
   </head>
   <body>
+    <img src="/img/movies/default.jpg" alt="vascvas" />
     <h1><%= naslov %></h1>
     <h4><%= status %></h4>
     <h2><%= kategorija %></h2>
@@ -19,6 +20,7 @@
       <a href="/viewMovies/<%=movie._id%>">
         <h2 class="film-title"><%= movie.title %></h2></a
       >
+      <img src="/img/movies/<% movie.slika%>" alt="">
       <p><%= movie.year %></p>
       <div class="film-rating">
         <p>Rating: <%= movie.imdbRating %></p>

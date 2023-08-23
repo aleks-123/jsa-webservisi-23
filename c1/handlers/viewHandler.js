@@ -31,6 +31,7 @@ exports.movieView = async (req, res) => {
 
 exports.createMovie = async (req, res) => {
   try {
+    console.log(req.auth.id);
     await Movie.create(req.body);
     res.redirect("/viewMovies");
   } catch (err) {
