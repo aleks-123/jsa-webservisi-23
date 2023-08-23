@@ -126,3 +126,7 @@ app.listen(process.env.PORT, (err) => {
 //? ZA DOMASNA DA SE IMMPLEMENTIRA OGLASI, da moze sekoj korisnik da si kreira sopstveni oglasi
 //? isto taka sekoj korisnik da moze da gi vidi samo sopstvenite oglasi
 //? bonus: se sto imame uceno implementirajte
+
+//!
+//? app.get("/movies/:id", movies.getOne);
+//? da se prikazat 3 filma, znaci da se implementira multer so koj kje mozeme da prikacime 3 sliki
