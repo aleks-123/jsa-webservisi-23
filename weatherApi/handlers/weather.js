@@ -36,7 +36,7 @@ const getCity = async (req, res) => {
     cache[req.params.city].localCache = null;
   }
 
-  //! proveruvame dali
+  //! ako nemame grad vo kashot ili ako gradot so localCache = null  togash da se refetchnime so weather api
   if (!cache[req.params.city] || cache[req.params.city].localCache === null) {
     let data = await fetch(url);
     cache[req.params.city] = {
