@@ -88,11 +88,11 @@ app.use(
 app.post("/api/v1/signup", authHandler.signup);
 app.post("/api/v1/login", authHandler.login);
 
-app.get("/movies", authHandler.middelwareTest, movies.getAll);
+app.get("/movies", movies.getAll);
 app.get("/movies/:id", movies.getOne);
 app.post("/movies", movies.create);
 app.put("/movies/:id", movies.replace);
-app.patch("/movies/:id", movies.uploadFilmPhotos, movies.update);
+app.patch("/movies/:id", movies.update);
 app.delete("/movies/:id", movies.delete);
 
 app.get("/me", movies.getByUser);
@@ -106,7 +106,7 @@ app.get("/deleteMovie/:id", viewHandler.deleteMovie);
 // app.post("/deleteMovie/:id", viewHandler.deleteMovie);
 app.get("/viewMovies/:id", viewHandler.viewMovieDetails);
 app.post("/modifyMovie/:id", viewHandler.modifyMovie);
-//? slusame aplikacija
+// //? slusame aplikacija
 app.listen(process.env.PORT, (err) => {
   if (err) {
     return console.log("Could not start service");

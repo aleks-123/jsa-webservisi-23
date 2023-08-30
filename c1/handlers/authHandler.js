@@ -2,6 +2,8 @@ const User = require("../pkg/user/userShema");
 // npm install jsonwebtoken
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+const sendEmail = require("./emailHandler");
+const sendMailGun = require("./mailgun");
 
 exports.signup = async (req, res) => {
   try {
@@ -16,22 +18,34 @@ exports.signup = async (req, res) => {
 
     // da generiraame token
     // kako prv parametar e payloadot, vtor parametar e tajnata recinica i kako tret rokot na istek
-    // const token = jwt.sign(
-    //   { id: newUser._id, name: newUser.name },
-    //   process.env.JWT_SECRET,
-    //   {
-    //     expiresIn: process.env.JWT_EXPIRES,
-    //   }
-    // );
+    const token = jwt.sign(
+      { id: newUser._id, name: newUser.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES,
+      }
+    );
 
     // res.kkoies ima tri parametri prviot so kako se vika kukisot vtoriot vrednosta na kukisot i tretiot parametar dodatni opcii
-    // res.cookie("jwt", token, {
-    //   expires: new Date(
-    //     Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
-    //   ),
-    //   secure: false,
-    //   httpOnly: true,
-    // });
+    res.cookie("jwt", token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+      ),
+      secure: false,
+      httpOnly: true,
+    });
+
+    await sendEmail({
+      email: newUser.email,
+      subject: "Blagodarnica",
+      message: "Vi blagodarime na izbranata doverba",
+    });
+
+    await sendMailGun({
+      email: newUser.email,
+      subject: "Blagodarnica",
+      message: "Vi blagodarime na izbranata doverba",
+    });
 
     // res.status ni vrakja token status i koirinkisot
     res.status(201).json({
