@@ -46,3 +46,10 @@ const sendEmail = async (options) => {
 };
 
 module.exports = sendEmail;
+
+//? Da se kreira web servis koj kje ima opcija za subscribe
+//? i na sekoj subskrajbnat korisnik da mu se iprakja email, na ovoj nachin
+//? naslov na emaajlot Vi blagodaram na doverbata
+//? emailot da e od korisnikot
+//? i porakata da e Vi blagodaram za doverbata imeto na korisnikot,i odma do imeto datumot na subskrajbot
+//? da se implementira ili so mailgun ili so nodemailer znaci izborot e vash
