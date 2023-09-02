@@ -27,6 +27,8 @@ const userSchema = new mongoose.Schema({
     minlength: [4, "Password must be at least 8 characters long"],
     // validate: [validator.isStrongPassword, "Please provide a strong passowrd"], // validacija dali e silen pasvordot
   },
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre("save", async function (next) {

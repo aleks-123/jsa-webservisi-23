@@ -88,6 +88,14 @@ app.use(
 app.post("/api/v1/signup", authHandler.signup);
 app.post("/api/v1/login", authHandler.login);
 
+app.post("/forgotPassword", authHandler.forgotPassword);
+app.patch("/resetPassword/:token", authHandler.resetPassword);
+// app.post("/resetPassword/:token", viewHandler.formResetPassword);
+// // app.get("/resetPassword/:token", async (req, res) => {
+// //   const token = req.params.token;
+// //   res.render("resetPassword", { token });
+// // });
+
 app.get("/movies", movies.getAll);
 app.get("/movies/:id", movies.getOne);
 app.post("/movies", movies.create);

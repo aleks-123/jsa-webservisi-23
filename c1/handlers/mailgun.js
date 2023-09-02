@@ -23,3 +23,5 @@ const sendMailGun = async (options) => {
     emailData
   );
 };
+
+module.exports = sendMailGun;

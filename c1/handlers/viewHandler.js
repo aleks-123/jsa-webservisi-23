@@ -80,3 +80,27 @@ exports.modifyMovie = async (req, res) => {
     res.status(500).send("Error with thjisd page");
   }
 };
+
+exports.formResetPassword = async (req, res) => {
+  try {
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    if (!user) throw new Error("Errorrr");
+
+    user.password = req.body.password;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined;
+
+    res.redirect("/login");
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};

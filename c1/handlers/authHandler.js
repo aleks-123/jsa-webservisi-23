@@ -4,6 +4,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const sendEmail = require("./emailHandler");
 const sendMailGun = require("./mailgun");
+const { errorMonitor } = require("form-data");
+const crypto = require("crypto");
 
 exports.signup = async (req, res) => {
   try {
@@ -35,17 +37,17 @@ exports.signup = async (req, res) => {
       httpOnly: true,
     });
 
-    await sendEmail({
-      email: newUser.email,
-      subject: "Blagodarnica",
-      message: "Vi blagodarime na izbranata doverba",
-    });
+    // await sendEmail({
+    //   email: newUser.email,
+    //   subject: "Blagodarnica",
+    //   message: "Vi blagodarime na izbranata doverba",
+    // });
 
-    await sendMailGun({
-      email: newUser.email,
-      subject: "Blagodarnica",
-      message: "Vi blagodarime na izbranata doverba",
-    });
+    // await sendMailGun({
+    //   email: newUser.email,
+    //   subject: "Blagodarnica",
+    //   message: "Vi blagodarime na izbranata doverba",
+    // });
 
     // res.status ni vrakja token status i koirinkisot
     res.status(201).json({
@@ -163,4 +165,99 @@ exports.middelwareTest = (req, res, next) => {
   req.semos = "WELCOME TO BACKEND";
 
   next();
+};
+
+exports.forgotPassword = async (req, res) => {
+  try {
+    //* 1) Da go pronajdime korinskikot so pomosh na negoviot email
+
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) throw new Error("This user doesnt exist");
+
+    console.log(user);
+    // return res.status(400).send("This user doesnt exist!")
+    //* 2) Da generirame resetiracki token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    //* 3) Da go zapishime resetirachkiot token vo korisnickiot dokument vo baza
+
+    user.passwordResetToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    //* zapishubame minutaza koja korisnikot kje ja ima za da go promeni korisnickiot pw (30 minuti)
+    user.passwordResetExpires = Date.now() + 30 * 60 * 1000;
+    await user.save({ validateBeforeSave: false });
+
+    //* 4) Da ispratime link do korisnickiot email
+    const resetUrl = `${req.protocol}://${req.get(
+      "host"
+    )}/resetPassword/${resetToken}`;
+
+    const message = `Ja zaboravivte lozinkata. Ve molime iskrostete Patch request so vashata nova lozinka i ova e rest url: ${resetUrl}`;
+    const subject = "Vashiot password resetiracki token";
+
+    await sendEmail({
+      email: user.email,
+      subject: subject,
+      message: message,
+    });
+
+    res.status(200).json({
+      status: "success",
+      message: "token sent to email!",
+    });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+};
+exports.resetPassword = async (req, res) => {
+  try {
+    const resetToken = req.params.token;
+    //* 1) Da go dobieme korisnickot dokument sto ima toj token
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    //* 2) Barame vo kolkecijata korisnici dali postoi korisnik sto go ima ovoj token
+
+    const user = await User.findOne({
+      passwordResetToken: hashedToken,
+      passwordResetExpires: { $gt: Date.now() },
+    });
+
+    //* 3) i sega kje proverime vo slucaj da ne pronajde korinsik
+    if (!user) throw new Error("token is invalid or expired");
+
+    user.password = req.body.password;
+    user.passwordResetExpires = undefined;
+    user.passwordResetToken = undefined;
+
+    await user.save();
+
+    //* 4)
+    const token = jwt.sign(
+      { id: user._id, name: user.name },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES,
+      }
+    );
+
+    res.cookie("jwt", token, {
+      expires: new Date(
+        Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 * 1000
+      ),
+      secure: false,
+      httpOnly: true,
+    });
+
+    res.status(201).json({
+      status: "success",
+      token,
+    });
+  } catch (err) {
+    return res.status(500).send(err);
+  }
 };
